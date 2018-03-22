@@ -598,7 +598,7 @@ TclObj::set_array(size_t objc,
 {
   array.erase(array.begin(), array.end());
   array.reserve(objc);
-  for (size_t i = 0; i < objc; i ++) {
+  for ( int i = 0; i < objc; ++ i ) {
     array.push_back(objv[i].mPtr);
   }
 }
@@ -610,9 +610,7 @@ TclObj::set_array(const TclObjVector& src,
 {
   array.erase(array.begin(), array.end());
   array.reserve(src.size());
-  for (TclObjVector::const_iterator vit = src.begin();
-       vit != src.end(); ++ vit) {
-    const TclObj& obj = *vit;
+  for ( auto obj: src ) {
     array.push_back(obj.mPtr);
   }
 }
@@ -624,9 +622,7 @@ TclObj::set_array(const TclObjList& src,
 {
   array.erase(array.begin(), array.end());
   array.reserve(src.size());
-  for (TclObjList::const_iterator lit = src.begin();
-       lit != src.end(); ++ lit) {
-    const TclObj& obj = *lit;
+  for ( auto obj: src ) {
     array.push_back(obj.mPtr);
   }
 }

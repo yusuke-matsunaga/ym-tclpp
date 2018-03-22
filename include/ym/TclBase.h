@@ -199,7 +199,7 @@ public:
   /// エラーの場合にはエラーメッセージをインタプリタにセットする．
   int
   uint_conv(const TclObj& obj,
-	    ymuint& ans) const;
+	    unsigned int& ans) const;
 
   /// @brief オブジェクトから long への変換
   /// @param[in] obj 変換元のオブジェクト
@@ -219,7 +219,7 @@ public:
   /// エラーの場合にはエラーメッセージをインタプリタにセットする．
   int
   ulong_conv(const TclObj& obj,
-	     ymulong& ans) const;
+	     unsigned long& ans) const;
 
   /// @brief オブジェクトから double への変換
   /// @param[in] obj 変換元のオブジェクト

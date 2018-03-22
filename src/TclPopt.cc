@@ -99,7 +99,7 @@ TclPopt::_init()
 // @param[inout] rpos コマンド行引数の次の位置
 // param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPopt::_action(const string& opt_str,
 		 TclObjVector::iterator& rpos,
 		 const TclObjVector::iterator& end)
@@ -107,7 +107,7 @@ TclPopt::_action(const string& opt_str,
   if ( !mAllowOverride && mCount > 0 ) {
     string emsg = opt_str + ": specified more than once";
     set_result(emsg);
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   ++ mCount;
   return action(opt_str, rpos, end);
@@ -125,12 +125,12 @@ TclPopt::init()
 // @param[inout] rpos コマンド行引数の次の位置
 // param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPopt::action(const string& opt_str,
 		TclObjVector::iterator& rpos,
 		const TclObjVector::iterator& end)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 // @brief 次の引数を取ってくる．
@@ -192,14 +192,14 @@ TclPoptObj::val() const
 // @param[inout] rpos コマンド行引数の次の位置
 // @param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptObj::action(const string& opt_str,
 		   TclObjVector::iterator& rpos,
 		   const TclObjVector::iterator& end)
 
 {
   if ( !get_next_arg(opt_str, rpos, end, mVal) ) {
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   return action_obj(opt_str);
 }
@@ -207,10 +207,10 @@ TclPoptObj::action(const string& opt_str,
 // @brief マッチしたときのアクション
 // @param[in] opt_str オプション文字列
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptObj::action_obj(const string& opt_str)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 
@@ -249,14 +249,14 @@ TclPoptStr::val() const
 // @param[inout] rpos コマンド行引数の次の位置
 // @param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptStr::action(const string& opt_str,
 		   TclObjVector::iterator& rpos,
 		   const TclObjVector::iterator& end)
 {
   TclObj arg_obj;
   if ( !get_next_arg(opt_str, rpos, end, arg_obj) ) {
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   // この変換は失敗しないはず
   mVal = arg_obj;
@@ -266,10 +266,10 @@ TclPoptStr::action(const string& opt_str,
 // @brief マッチしたときのアクション
 // @param[in] opt_str オプション文字列
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptStr::action_str(const string& opt_str)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 
@@ -308,19 +308,19 @@ TclPoptBool::val() const
 // @param[inout] rpos コマンド行引数の次の位置
 // @param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptBool::action(const string& opt_str,
 		    TclObjVector::iterator& rpos,
 		    const TclObjVector::iterator& end)
 {
   TclObj arg_obj;
   if ( !get_next_arg(opt_str, rpos, end, arg_obj) ) {
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   if ( bool_conv(arg_obj, mVal) == TCL_ERROR ) {
     string emsg = opt_str + ": Needs an boolean value";
     set_result(emsg);
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   return action_bool(opt_str);
 }
@@ -328,10 +328,10 @@ TclPoptBool::action(const string& opt_str,
 // @brief マッチしたときのアクション
 // @param[in] opt_str オプション文字列
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptBool::action_bool(const string& opt_str)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 
@@ -370,19 +370,19 @@ TclPoptInt::val() const
 // @param[inout] rpos コマンド行引数の次の位置
 // @param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptInt::action(const string& opt_str,
 		   TclObjVector::iterator& rpos,
 		   const TclObjVector::iterator& end)
 {
   TclObj arg_obj;
   if ( !get_next_arg(opt_str, rpos, end, arg_obj) ) {
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   if ( int_conv(arg_obj, mVal) == TCL_ERROR ) {
     string emsg = opt_str + ": Needs an integer value";
     set_result(emsg);
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   return action_int(opt_str);
 }
@@ -390,10 +390,10 @@ TclPoptInt::action(const string& opt_str,
 // @brief マッチしたときのアクション
 // @param[in] opt_str オプション文字列
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptInt::action_int(const string& opt_str)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 
@@ -421,7 +421,7 @@ TclPoptUint::~TclPoptUint()
 }
 
 // @brief オプション引数の値を返す．
-ymuint
+unsigned int
 TclPoptUint::val() const
 {
   return mVal;
@@ -432,19 +432,19 @@ TclPoptUint::val() const
 // @param[inout] rpos コマンド行引数の次の位置
 // @param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptUint::action(const string& opt_str,
 		    TclObjVector::iterator& rpos,
 		    const TclObjVector::iterator& end)
 {
   TclObj arg_obj;
   if ( !get_next_arg(opt_str, rpos, end, arg_obj) ) {
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   if ( uint_conv(arg_obj, mVal) == TCL_ERROR ) {
     string emsg = opt_str + ": Needs an unsigned integer value";
     set_result(emsg);
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   return action_uint(opt_str);
 }
@@ -452,10 +452,10 @@ TclPoptUint::action(const string& opt_str,
 // @brief マッチしたときのアクション
 // @param[in] opt_str オプション文字列
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptUint::action_uint(const string& opt_str)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 
@@ -494,19 +494,19 @@ TclPoptLong::val() const
 // @param[inout] rpos コマンド行引数の次の位置
 // @param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptLong::action(const string& opt_str,
 		    TclObjVector::iterator& rpos,
 		    const TclObjVector::iterator& end)
 {
   TclObj arg_obj;
   if ( !get_next_arg(opt_str, rpos, end, arg_obj) ) {
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   if ( long_conv(arg_obj, mVal) == TCL_ERROR ) {
     string emsg = opt_str + ": Needs a long integer value";
     set_result(emsg);
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   return action_long(opt_str);
 }
@@ -514,10 +514,10 @@ TclPoptLong::action(const string& opt_str,
 // @brief マッチしたときのアクション
 // @param[in] opt_str オプション文字列
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptLong::action_long(const string& opt_str)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 
@@ -545,7 +545,7 @@ TclPoptUlong::~TclPoptUlong()
 }
 
 // @brief オプション引数の値を返す．
-ymulong
+unsigned long
 TclPoptUlong::val() const
 {
   return mVal;
@@ -556,19 +556,19 @@ TclPoptUlong::val() const
 // @param[inout] rpos コマンド行引数の次の位置
 // @param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptUlong::action(const string& opt_str,
 		     TclObjVector::iterator& rpos,
 		     const TclObjVector::iterator& end)
 {
   TclObj arg_obj;
   if ( !get_next_arg(opt_str, rpos, end, arg_obj) ) {
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   if ( ulong_conv(arg_obj, mVal) == TCL_ERROR ) {
     string emsg = opt_str + ": Needs a long integer value";
     set_result(emsg);
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   return action_ulong(opt_str);
 }
@@ -576,10 +576,10 @@ TclPoptUlong::action(const string& opt_str,
 // @brief マッチしたときのアクション
 // @param[in] opt_str オプション文字列
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptUlong::action_ulong(const string& opt_str)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 
@@ -618,19 +618,19 @@ TclPoptDouble::val() const
 // @param[inout] rpos コマンド行引数の次の位置
 // @param[in] end コマンド行引数の終端位置
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptDouble::action(const string& opt_str,
 		      TclObjVector::iterator& rpos,
 		      const TclObjVector::iterator& end)
 {
   TclObj arg_obj;
   if ( !get_next_arg(opt_str, rpos, end, arg_obj) ) {
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   if ( double_conv(arg_obj, mVal) == TCL_ERROR ) {
     string emsg = opt_str + ": Needs a double floating value";
     set_result(emsg);
-    return kTclPoptError;
+    return TclPoptStat::Error;
   }
   return action_double(opt_str);
 }
@@ -638,10 +638,10 @@ TclPoptDouble::action(const string& opt_str,
 // @brief マッチしたときのアクション
 // @param[in] opt_str オプション文字列
 // @return 処理結果
-tTclPoptStat
+TclPoptStat
 TclPoptDouble::action_double(const string& opt_str)
 {
-  return kTclPoptOk;
+  return TclPoptStat::Ok;
 }
 
 
@@ -671,9 +671,7 @@ bool
 TclPoptGroup::check() const
 {
   int count = 0;
-  for (list<TclPopt*>::const_iterator p = mPoptList.begin();
-       p != mPoptList.end(); ++ p) {
-    TclPopt* popt = *p;
+  for ( auto popt: mPoptList ) {
     if ( popt->is_specified() ) {
       ++ count;
     }
@@ -682,7 +680,7 @@ TclPoptGroup::check() const
 }
 
 // @brief 要素のリストを返す．
-const list<TclPopt*>&
+const vector<TclPopt*>&
 TclPoptGroup::popt_list() const
 {
   return mPoptList;

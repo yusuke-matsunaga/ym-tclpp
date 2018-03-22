@@ -43,7 +43,7 @@ public:
   check() const;
 
   /// @brief 要素のリストを返す．
-  const list<TclPopt*>&
+  const vector<TclPopt*>&
   popt_list() const;
 
 
@@ -53,7 +53,7 @@ private:
   //////////////////////////////////////////////////////////////////////
 
   // 要素のリスト
-  list<TclPopt*> mPoptList;
+  vector<TclPopt*> mPoptList;
 
 };
 

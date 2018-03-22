@@ -19,13 +19,13 @@ BEGIN_NAMESPACE_YM_TCLPP
 //////////////////////////////////////////////////////////////////////
 /// @brief TclPopt のパーズ結果を表す列挙型
 //////////////////////////////////////////////////////////////////////
-enum tTclPoptStat {
+enum TclPoptStat {
   /// @brief 正常終了
-  kTclPoptOk,
+  Ok,
   /// @brief 正常終了，以後の処理は行わない
-  kTclPoptBreak,
+  Break,
   /// @brief エラー
-  kTclPoptError
+  Error
 };
 
 
@@ -57,6 +57,9 @@ public:
 
 
 public:
+  //////////////////////////////////////////////////////////////////////
+  // 外部インターフェイス
+  //////////////////////////////////////////////////////////////////////
 
   /// @brief 関連付けられているコマンドを返す．
   TclCmd*
@@ -95,7 +98,7 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  tTclPoptStat
+  TclPoptStat
   _action(const string& opt_str,
 	  TclObjVector::iterator& rpos,
 	  const TclObjVector::iterator& end);
@@ -119,7 +122,7 @@ private:
   /// @return 処理結果
   /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
 	 const TclObjVector::iterator& end);
@@ -210,12 +213,13 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  /// @note mVal に値をセットして action_obj() を呼び出す．
+  ///
+  /// mVal に値をセットして action_obj() を呼び出す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
-	 const TclObjVector::iterator& end);
+	 const TclObjVector::iterator& end) override;
 
 
 private:
@@ -226,9 +230,8 @@ private:
   /// @brief マッチしたときのアクション
   /// @param[in] opt_str オプション文字列
   /// @return 処理結果
-  /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action_obj(const string& opt_str);
 
 
@@ -286,12 +289,13 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  /// @note mVal に値をセットして action_str() を呼び出す．
+  ///
+  /// mVal に値をセットして action_str() を呼び出す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
-	 const TclObjVector::iterator& end);
+	 const TclObjVector::iterator& end) override;
 
 
 private:
@@ -302,9 +306,8 @@ private:
   /// @brief マッチしたときのアクション
   /// @param[in] opt_str オプション文字列
   /// @return 処理結果
-  /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action_str(const string& opt_str);
 
 
@@ -362,12 +365,13 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  /// @note mVal に値をセットして action_bool() を呼び出す．
+  ///
+  /// mVal に値をセットして action_bool() を呼び出す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
-	 const TclObjVector::iterator& end);
+	 const TclObjVector::iterator& end) override;
 
 
 private:
@@ -378,9 +382,8 @@ private:
   /// @brief マッチしたときのアクション
   /// @param[in] opt_str オプション文字列
   /// @return 処理結果
-  /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action_bool(const string& opt_str);
 
 
@@ -424,7 +427,7 @@ public:
 public:
 
   /// @brief オプション引数の値を返す．
-  ymint
+  int
   val() const;
 
 
@@ -438,12 +441,13 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  /// @note mVal に値をセットして action_int() を呼び出す．
+  ///
+  /// mVal に値をセットして action_int() を呼び出す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
-	 const TclObjVector::iterator& end);
+	 const TclObjVector::iterator& end) override;
 
 
 private:
@@ -454,9 +458,8 @@ private:
   /// @brief マッチしたときのアクション
   /// @param[in] opt_str オプション文字列
   /// @return 処理結果
-  /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action_int(const string& opt_str);
 
 
@@ -466,7 +469,7 @@ private:
   //////////////////////////////////////////////////////////////////////
 
   // パーズ結果を格納する変数
-  ymint mVal;
+  int mVal;
 
 };
 
@@ -500,7 +503,7 @@ public:
 public:
 
   /// @brief オプション引数の値を返す．
-  ymuint
+  unsigned int
   val() const;
 
 
@@ -514,12 +517,13 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  /// @note mVal に値をセットして action_uint() を呼び出す．
+  ///
+  /// mVal に値をセットして action_uint() を呼び出す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
-	 const TclObjVector::iterator& end);
+	 const TclObjVector::iterator& end) override;
 
 
 private:
@@ -530,9 +534,8 @@ private:
   /// @brief マッチしたときのアクション
   /// @param[in] opt_str オプション文字列
   /// @return 処理結果
-  /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action_uint(const string& opt_str);
 
 
@@ -542,7 +545,7 @@ private:
   //////////////////////////////////////////////////////////////////////
 
   // パーズ結果を格納する変数
-  ymuint mVal;
+  unsigned int mVal;
 
 };
 
@@ -576,7 +579,7 @@ public:
 public:
 
   /// @brief オプション引数の値を返す．
-  ymlong
+  long
   val() const;
 
 
@@ -590,12 +593,13 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  /// @note mVal に値をセットして action_long() を呼び出す．
+  ///
+  /// mVal に値をセットして action_long() を呼び出す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
-	 const TclObjVector::iterator& end);
+	 const TclObjVector::iterator& end) override;
 
 
 private:
@@ -606,9 +610,8 @@ private:
   /// @brief マッチしたときのアクション
   /// @param[in] opt_str オプション文字列
   /// @return 処理結果
-  /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action_long(const string& opt_str);
 
 
@@ -618,7 +621,7 @@ private:
   //////////////////////////////////////////////////////////////////////
 
   // パーズ結果を格納する変数
-  ymlong mVal;
+  long mVal;
 
 };
 
@@ -652,7 +655,7 @@ public:
 public:
 
   /// @brief オプション引数の値を返す．
-  ymulong
+  unsigned long
   val() const;
 
 
@@ -666,12 +669,13 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  /// @note mVal に値をセットして action_ulong() を呼び出す．
+  ///
+  /// mVal に値をセットして action_ulong() を呼び出す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
-	 const TclObjVector::iterator& end);
+	 const TclObjVector::iterator& end) override;
 
 
 private:
@@ -682,9 +686,8 @@ private:
   /// @brief マッチしたときのアクション
   /// @param[in] opt_str オプション文字列
   /// @return 処理結果
-  /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action_ulong(const string& opt_str);
 
 
@@ -694,7 +697,7 @@ private:
   //////////////////////////////////////////////////////////////////////
 
   // パーズ結果を格納する変数
-  ymulong mVal;
+  unsigned long mVal;
 
 };
 
@@ -742,12 +745,13 @@ public:
   /// @param[inout] rpos コマンド行引数の次の位置
   /// @param[in] end コマンド行引数の終端位置
   /// @return 処理結果
-  /// @note mVal に値をセットして action_double() を呼び出す．
+  ///
+  /// mVal に値をセットして action_double() を呼び出す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action(const string& opt_str,
 	 TclObjVector::iterator& rpos,
-	 const TclObjVector::iterator& end);
+	 const TclObjVector::iterator& end) override;
 
 
 private:
@@ -759,9 +763,8 @@ private:
   /// @param[in] opt_str オプション文字列
   /// @param[in] arg_val オプションの引数
   /// @return 処理結果
-  /// @note デフォルトの実装ではなにもしないで kTclPoptOk を返す．
   virtual
-  tTclPoptStat
+  TclPoptStat
   action_double(const string& opt_str);
 
 

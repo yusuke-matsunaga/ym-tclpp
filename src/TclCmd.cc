@@ -44,7 +44,7 @@ cmd_command_callback(ClientData clientData,
 
   // TclObj の配列に入れ直す．
   TclObjVector obj_array(objc);
-  for (int i = 0; i < objc; i ++) {
+  for ( int i = 0; i < objc; i ++ ) {
     obj_array[i] = objv[i];
   }
 
@@ -72,14 +72,10 @@ TclCmd::TclCmd() :
 // デストラクタ
 TclCmd::~TclCmd()
 {
-  for (list<TclPopt*>::iterator p = mPoptList.begin();
-       p != mPoptList.end(); ++ p) {
-    TclPopt* popt = *p;
+  for ( auto popt: mPoptList ) {
     delete popt;
   }
-  for (list<TclPoptGroup*>::iterator p = mPoptGroupList.begin();
-       p != mPoptGroupList.end(); ++ p) {
-    TclPoptGroup* popt_group = *p;
+  for ( auto popt_group: mPoptGroupList ) {
     delete popt_group;
   }
 }
@@ -91,9 +87,7 @@ TclCmd::bind(Tcl_Interp* interp,
 {
   // インタプリタをセットする．
   set_interp(interp);
-  for (list<TclPopt*>::iterator p = mPoptList.begin();
-       p != mPoptList.end(); ++ p) {
-    TclPopt* popt = *p;
+  for ( auto popt: mPoptList ) {
     popt->set_interp(interp);
   }
 
@@ -138,9 +132,7 @@ TclCmd::parse_opt(TclObjVector& objv,
   help = false;
 
   // 初期化
-  for (list<TclPopt*>::iterator p = mPoptList.begin();
-       p != mPoptList.end(); ++ p) {
-    TclPopt* popt = *p;
+  for ( auto popt: mPoptList ) {
     popt->_init();
   }
 
@@ -178,11 +170,11 @@ TclCmd::parse_opt(TclObjVector& objv,
       set_result(emsg);
       return TCL_ERROR;
     }
-    tTclPoptStat stat = popt->_action(opt_str, rpos, end);
-    if ( stat == kTclPoptError ) {
+    TclPoptStat stat = popt->_action(opt_str, rpos, end);
+    if ( stat == TclPoptStat::Error ) {
       return TCL_ERROR;
     }
-    if ( stat == kTclPoptBreak ) {
+    if ( stat == TclPoptStat::Break ) {
       break;
     }
   }
@@ -193,28 +185,14 @@ TclCmd::parse_opt(TclObjVector& objv,
   objv.erase(wpos, end);
 
   // 排他的オプションのチェック
-  for (list<TclPoptGroup*>::iterator p = mPoptGroupList.begin();
-       p != mPoptGroupList.end(); ++ p) {
-    TclPoptGroup* popt_group = *p;
+  for ( auto popt_group: mPoptGroupList ) {
     if ( popt_group->check() ) {
-      const list<TclPopt*>& popt_list = popt_group->popt_list();
-      size_t num = popt_list.size();
+      const vector<TclPopt*>& popt_list = popt_group->popt_list();
       string emsg;
-      size_t i = 0;
-      for (list<TclPopt*>::const_iterator q = popt_list.begin();
-	   q != popt_list.end(); ++ q, ++ i) {
-	TclPopt* popt = *q;
-	if ( i > 0 ) {
-	  if ( i < (num - 1) ) {
-	    emsg += ", ";
-	  }
-	  else if ( num > 2 ) {
-	    emsg += ", and ";
-	  }
-	  else {
-	    emsg += " and ";
-	  }
-	}
+      const char* comma = "";
+      for ( auto popt: popt_list ) {
+	emsg += comma;
+	comma = ", ";
 	emsg += "-" + popt->opt_str();
       }
       emsg += " are exclusive";
@@ -294,9 +272,7 @@ TclCmd::print_help()
     buf << endl
 	<< "Options:" << endl;
   }
-  for (list<TclPopt*>::iterator p = mPoptList.begin();
-       p != mPoptList.end(); ++ p) {
-    TclPopt* popt = *p;
+  for ( auto popt: mPoptList ) {
     print_opt(buf, popt->opt_str(), popt->arg_desc(), popt->opt_desc());
   }
   if ( mAutoHelp ) {
@@ -314,9 +290,7 @@ TclCmd::print_usage()
 {
   ostringstream buf;
   buf << "Usage: " << arg0();
-  for (list<TclPopt*>::iterator p = mPoptList.begin();
-       p != mPoptList.end(); ++ p) {
-    TclPopt* popt = *p;
+  for ( auto popt: mPoptList ) {
     buf << " [-" << popt->opt_str();
     if ( popt->arg_desc() != string() ) {
       buf << " " << popt->arg_desc();

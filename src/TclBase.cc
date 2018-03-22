@@ -181,7 +181,7 @@ TclBase::int_conv(const TclObj& obj,
 // を返し，エラーメッセージをインタプリタにセットする．
 int
 TclBase::uint_conv(const TclObj& obj,
-		   ymuint& ans) const
+		   unsigned int& ans) const
 {
   return obj.get_uint(ans, interp());
 }
@@ -201,7 +201,7 @@ TclBase::long_conv(const TclObj& obj,
 // を返し，エラーメッセージをインタプリタにセットする．
 int
 TclBase::ulong_conv(const TclObj& obj,
-		    ymulong& ans) const
+		    unsigned long& ans) const
 {
   return obj.get_ulong(ans, interp());
 }

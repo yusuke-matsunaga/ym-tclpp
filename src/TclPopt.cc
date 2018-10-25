@@ -359,7 +359,7 @@ TclPoptInt::~TclPoptInt()
 }
 
 // @brief オプション引数の値を返す．
-ymint
+int
 TclPoptInt::val() const
 {
   return mVal;
@@ -483,7 +483,7 @@ TclPoptLong::~TclPoptLong()
 }
 
 // @brief オプション引数の値を返す．
-ymlong
+long
 TclPoptLong::val() const
 {
   return mVal;

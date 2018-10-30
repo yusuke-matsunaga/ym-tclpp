@@ -19,6 +19,7 @@ find_package (TCL REQUIRED)
 # インクルードパスの設定
 # ===================================================================
 include_directories(
+  ${PROJECT_BINARY_DIR}/include
   ${PROJECT_SOURCE_DIR}/ym-common/include
   ${PROJECT_SOURCE_DIR}/ym-base/include
   ${CMAKE_CURRENT_SOURCE_DIR}/include

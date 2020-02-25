@@ -12,7 +12,6 @@
 #include "ym/ym_tclpp.h"
 #include "ym/TclBase.h"
 #include "ym/TclObj.h"
-#include "ym/HashMap.h"
 
 
 BEGIN_NAMESPACE_YM_TCLPP
@@ -227,10 +226,10 @@ protected:
   list<TclPopt*> mPoptList;
 
   // オプション文字列をキーとして TclPopt を要素とするハッシュ表
-  HashMap<string, TclPopt*> mPoptTable;
+  unordered_map<string, TclPopt*> mPoptTable;
 
   // TclPoptGroup のリスト
-  list<TclPoptGroup*> mPoptGroupList;
+  vector<TclPoptGroup*> mPoptGroupList;
 
 };
 

@@ -101,8 +101,8 @@ public:
   /// @sa bind(Tcl_Interp* interp, const string& name1, const string& name2, int flags)
   virtual
   char*
-  vartrace_proc(CONST84 char* name1,
-		CONST84 char* name2,
+  vartrace_proc(const char* name1,
+		const char* name2,
 		int flags) = 0;
 
 
@@ -113,8 +113,8 @@ private:
   char*
   vartrace_callback(ClientData clientData,
 		    Tcl_Interp* interp,
-		    CONST84 char* name1,
-		    CONST84 char* name2,
+		    const char* name1,
+		    const char* name2,
 		    int flags);
 
 

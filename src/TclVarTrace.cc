@@ -3,17 +3,14 @@
 /// @brief TclVarTrace の実装ファイル
 /// @author Yusuke Matsunaga (松永 裕介)
 ///
-/// Copyright (C) 2005-2010, 2014 Yusuke Matsunaga
+/// Copyright (C) 2005-2010, 2014, 2020 Yusuke Matsunaga
 /// All rights reserved.
 
 
 #include "ym/TclVarTrace.h"
 
-#include "StrBuf.h"
-
 
 BEGIN_NAMESPACE_YM_TCLPP
-
 
 // コンストラクタ
 TclVarTrace::TclVarTrace()
@@ -34,7 +31,7 @@ TclVarTrace::bind(Tcl_Interp* interp,
 		  const string& name1,
 		  int flags)
 {
-  int result = TCL_OK;
+  int result{TCL_OK};
   if ( !is_bound() ) {
     mName1 = name1;
     mName2 = "";
@@ -42,8 +39,8 @@ TclVarTrace::bind(Tcl_Interp* interp,
     // もともと flags に TCL_TRACE_UNSETS が含まれていなくても
     // それを足しておく．
     flags |= TCL_TRACE_UNSETS;
-    StrBuf sptr(mName1);
-    result = Tcl_TraceVar(interp, sptr, flags,
+    const char* tmp_str{mName1.c_str()};
+    result = Tcl_TraceVar(interp, tmp_str, flags,
 			  vartrace_callback, (ClientData) this);
     if ( result == TCL_OK ) {
       set_interp(interp);
@@ -61,7 +58,7 @@ TclVarTrace::bind(Tcl_Interp* interp,
 		  const string& name2,
 		  int flags)
 {
-  int result = TCL_OK;
+  int result{TCL_OK};
   if ( !is_bound() ) {
     mName1 = name1;
     mName2 = name2;
@@ -69,9 +66,7 @@ TclVarTrace::bind(Tcl_Interp* interp,
     // もともと flags に TCL_TRACE_UNSETS が含まれていなくても
     // それを足しておく．
     flags |= TCL_TRACE_UNSETS;
-    StrBuf sptr1(mName1);
-    StrBuf sptr2(mName2);
-    result = Tcl_TraceVar2(interp, sptr1, sptr2, flags,
+    result = Tcl_TraceVar2(interp, mName1.c_str(), mName2.c_str(), flags,
 			   vartrace_callback, (ClientData) this);
     if ( result == TCL_OK ) {
       set_interp(interp);
@@ -88,17 +83,14 @@ TclVarTrace::unbind()
 {
   // もともと mFlags に TCL_TRACE_UNSETS が含まれていなくても
   // それを足しておく．
-  int flags = mFlags | TCL_TRACE_UNSETS;
+  int flags{mFlags | TCL_TRACE_UNSETS};
   if ( is_bound() ) {
     if ( mName2 !=  "" ) {
-      StrBuf sptr1(mName1);
-      StrBuf sptr2(mName2);
-      Tcl_UntraceVar2(interp(), sptr1, sptr2, flags,
+      Tcl_UntraceVar2(interp(), mName1.c_str(), mName2.c_str(), flags,
 		      vartrace_callback, (ClientData) this);
     }
     else {
-      StrBuf sptr1(mName1);
-      Tcl_UntraceVar(interp(), sptr1, flags,
+      Tcl_UntraceVar(interp(), mName1.c_str(), flags,
 		     vartrace_callback, (ClientData) this);
     }
     set_interp(nullptr);
@@ -109,18 +101,18 @@ TclVarTrace::unbind()
 char*
 TclVarTrace::vartrace_callback(ClientData clientData,
 			       Tcl_Interp* interp,
-			       CONST84 char* name1,
-			       CONST84 char* name2,
+			       const char* name1,
+			       const char* name2,
 			       int flags)
 {
   // オブジェクトを得る．
-  TclVarTrace* trace_obj = static_cast<TclVarTrace*>( clientData );
+  auto trace_obj{static_cast<TclVarTrace*>( clientData )};
 
   // 念のため trace_obj の持っているインタプリタと interp が一致
   // する事を確かめておく．
   ASSERT_COND( interp == trace_obj->interp() );
 
-  char* result = nullptr;
+  char* result{nullptr};
 
   if ((flags & TCL_TRACE_UNSETS) == 0 ||
       (trace_obj->flags() & TCL_TRACE_UNSETS) == TCL_TRACE_UNSETS) {

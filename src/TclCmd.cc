@@ -3,7 +3,7 @@
 /// @brief TclCmd の実装ファイル
 /// @author Yusuke Matsunaga (松永 裕介)
 ///
-/// Copyright (C) 2005-2010, 2014 Yusuke Matsunaga
+/// Copyright (C) 2005-2010, 2014, 2020 Yusuke Matsunaga
 /// All rights reserved.
 
 
@@ -12,7 +12,6 @@
 #include "ym/TclObj.h"
 
 #include "TclPoptGroup.h"
-#include "StrBuf.h"
 
 
 BEGIN_NAMESPACE_YM_TCLPP
@@ -64,8 +63,8 @@ cmd_delete_callback(ClientData clientData)
 
 // コンストラクタ
 TclCmd::TclCmd() :
-  mCmdToken(nullptr),
-  mAutoHelp(true)
+  mCmdToken{nullptr},
+  mAutoHelp{true}
 {
 }
 
@@ -94,8 +93,7 @@ TclCmd::bind(Tcl_Interp* interp,
   // コマンド名をセットする．
   mCmdName = cmd_name;
   // コマンドを登録する．
-  StrBuf sptr(mCmdName);
-  mCmdToken = Tcl_CreateObjCommand(interp, sptr,
+  mCmdToken = Tcl_CreateObjCommand(interp, mCmdName.c_str(),
 				   cmd_command_callback,
 				   reinterpret_cast<ClientData>(this),
 				   cmd_delete_callback);

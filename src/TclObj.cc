@@ -3,20 +3,18 @@
 /// @brief TclObj の実装ファイル
 /// @author Yusuke Matsunaga (松永 裕介)
 ///
-/// Copyright (C) 2005-2010, 2014 Yusuke Matsunaga
+/// Copyright (C) 2005-2010, 2014, 2020 Yusuke Matsunaga
 /// All rights reserved.
 
 
 #include "ym/TclObj.h"
-
-#include "StrBuf.h"
 
 
 BEGIN_NAMESPACE_YM_TCLPP
 
 // コンストラクタ
 TclObj::TclObj(Tcl_Obj* obj) :
-  mPtr(obj)
+  mPtr{obj}
 {
   inc();
 }
@@ -60,15 +58,13 @@ TclObj::TclObj(double value)
 // 文字列型の値をセットするコンストラクタ．
 TclObj::TclObj(const string& value)
 {
-  StrBuf sptr(value);
-  set_ptr(Tcl_NewStringObj(sptr, -1));
+  set_ptr(Tcl_NewStringObj(value.c_str(), -1));
 }
 
 // const char* の値をセットするコンストラクタ
 TclObj::TclObj(const char* value)
 {
-  StrBuf sptr(value);
-  set_ptr(Tcl_NewStringObj(sptr, -1));
+  set_ptr(Tcl_NewStringObj(value, -1));
 }
 
 // リスト型の値をセットするコンストラクタ
@@ -96,7 +92,7 @@ TclObj::TclObj(const TclObjList& objv)
 
 // コピーコンストラクタ
 TclObj::TclObj(const TclObj& src) :
-  mPtr(src.mPtr)
+  mPtr{src.mPtr}
 {
   inc();
 }
@@ -262,31 +258,21 @@ TclObj::set_double(double value)
 void
 TclObj::set_string(const string& value)
 {
-  StrBuf sptr(value);
-  if ( !mPtr ) {
-    set_ptr(Tcl_NewStringObj(sptr, -1));
-  }
-  else if ( Tcl_IsShared(mPtr) ) {
-    Tcl_DecrRefCount(mPtr);
-    set_ptr(Tcl_NewStringObj(sptr, -1));
-  }
-  else {
-    Tcl_SetStringObj(mPtr, sptr, -1);
-  }
+  set_string(value.c_str());
 }
+
 void
 TclObj::set_string(const char* value)
 {
-  StrBuf sptr(value);
   if ( !mPtr ) {
-    set_ptr(Tcl_NewStringObj(sptr, -1));
+    set_ptr(Tcl_NewStringObj(value, -1));
   }
   else if ( Tcl_IsShared(mPtr) ) {
     Tcl_DecrRefCount(mPtr);
-    set_ptr(Tcl_NewStringObj(sptr, -1));
+    set_ptr(Tcl_NewStringObj(value, -1));
   }
   else {
-    Tcl_SetStringObj(mPtr, sptr, -1);
+    Tcl_SetStringObj(mPtr, value, -1);
   }
 }
 
@@ -359,8 +345,8 @@ void
 TclObj::append(const string& value)
 {
   instanciate();
-  if ( value.c_str() ) {
-    StrBuf p(value);
+  const char* p{value.c_str()};
+  if ( p ) {
     Tcl_AppendToObj(mPtr, p, -1);
   }
   else {

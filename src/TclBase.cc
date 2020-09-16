@@ -3,7 +3,7 @@
 /// @brief TclBase の実装ファイル
 /// @author Yusuke Matsunaga (松永 裕介)
 ///
-/// Copyright (C) 2005-2010, 2014 Yusuke Matsunaga
+/// Copyright (C) 2005-2010, 2014, 2020 Yusuke Matsunaga
 /// All rights reserved.
 
 
@@ -11,15 +11,13 @@
 #include "ym/TclObj.h"
 #include "ym/TclVarTrace.h"
 
-#include "StrBuf.h"
-
 
 BEGIN_NAMESPACE_YM_TCLPP
 
 // コンストラクタ
 // 最初は特定のインタープリタには結び付いていない．
 TclBase::TclBase() :
-  mInterp(nullptr)
+  mInterp{nullptr}
 {
 }
 
@@ -62,8 +60,7 @@ TclBase::global_eval(const TclObj& script) const
 int
 TclBase::eval_file(const string& file) const
 {
-  StrBuf sptr(file);
-  return Tcl_EvalFile(interp(), sptr);
+  return Tcl_EvalFile(interp(), file.c_str());
 }
 
 // script を履歴リストにイベントとして登録し，flags が0ならば
@@ -89,8 +86,7 @@ TclBase::record_and_eval(const TclObj& script,
 int
 TclBase::delete_command(const string& cmdName) const
 {
-  StrBuf sptr(cmdName);
-  return Tcl_DeleteCommand(interp(), sptr);
+  return Tcl_DeleteCommand(interp(), cmdName.c_str());
 }
 
 // token を使ってコマンドを削除する．
@@ -108,8 +104,7 @@ int
 TclBase::command_info(const string& cmd_name,
 		      Tcl_CmdInfo* info) const
 {
-  StrBuf sptr(cmd_name);
-  return Tcl_GetCommandInfo(interp(), sptr, info);
+  return Tcl_GetCommandInfo(interp(), cmd_name.c_str(), info);
 }
 
 // コマンドに関する情報をセットする．
@@ -121,8 +116,7 @@ int
 TclBase::set_command_info(const string& cmd_name,
 			  Tcl_CmdInfo* info) const
 {
-  StrBuf sptr(cmd_name);
-  return Tcl_SetCommandInfo(interp(), sptr, info);
+  return Tcl_SetCommandInfo(interp(), cmd_name.c_str(), info);
 }
 
 // コマンド名を得る．
@@ -130,7 +124,7 @@ TclBase::set_command_info(const string& cmd_name,
 string
 TclBase::command_name(Tcl_Command token) const
 {
-  CONST84 char* result = Tcl_GetCommandName(interp(), token);
+  auto result{Tcl_GetCommandName(interp(), token)};
   return string(result);
 }
 
@@ -157,7 +151,7 @@ TclBase::reset_result() const
 TclObj
 TclBase::result() const
 {
-  Tcl_Obj* tmp = Tcl_GetObjResult(interp());
+  auto tmp{Tcl_GetObjResult(interp())};
   return TclObj(tmp);
 }
 
@@ -336,8 +330,7 @@ TclBase::print_double(double val) const
 void
 TclBase::add_errorinfo(const string& message) const
 {
-  StrBuf sptr(message);
-  Tcl_AddErrorInfo(interp(), sptr);
+  Tcl_AddErrorInfo(interp(), message.c_str());
 }
 
 // obj を Tcl 変数 errorCode にセットする．
@@ -420,8 +413,7 @@ int
 TclBase::unset_var(const string& name,
 		   int flags) const
 {
-  StrBuf sptr(name.c_str());
-  int result = Tcl_UnsetVar(interp(), sptr, flags);
+  int result = Tcl_UnsetVar(interp(), name.c_str(), flags);
   return result;
 }
 
@@ -433,9 +425,7 @@ TclBase::unset_var(const string& base,
 		   const string& idx,
 		   int flags) const
 {
-  StrBuf sptr1(base);
-  StrBuf sptr2(idx);
-  int result = Tcl_UnsetVar2(interp(), sptr1, sptr2, flags);
+  int result = Tcl_UnsetVar2(interp(), base.c_str(), idx.c_str(), flags);
   return result;
 }
 
@@ -446,8 +436,7 @@ TclBase::link_var(const string& name,
 		  char* addr,
 		  int type) const
 {
-  StrBuf sptr(name);
-  int result = Tcl_LinkVar(interp(), sptr, addr, type);
+  int result = Tcl_LinkVar(interp(), name.c_str(), addr, type);
   return result;
 }
 
@@ -455,8 +444,7 @@ TclBase::link_var(const string& name,
 void
 TclBase::unlink_var(const string& name) const
 {
-  StrBuf sptr(name);
-  Tcl_UnlinkVar(interp(), sptr);
+  Tcl_UnlinkVar(interp(), name.c_str());
 }
 
 
@@ -719,8 +707,7 @@ TclBase::vartrace_info(const string& name,
 		       int flags,
 		       TclVarTrace* prev_obj) const
 {
-  StrBuf sptr(name);
-  ClientData result = Tcl_VarTraceInfo(interp(), sptr, flags,
+  ClientData result = Tcl_VarTraceInfo(interp(), name.c_str(), flags,
 				       TclVarTrace::vartrace_callback,
 				       (ClientData) prev_obj);
   return (TclVarTrace*) result;
@@ -738,9 +725,7 @@ TclBase::vartrace_info(const string& base,
 		       int flags,
 		       TclVarTrace* prev_obj) const
 {
-  StrBuf sptr1(base);
-  StrBuf sptr2(idx);
-  ClientData result = Tcl_VarTraceInfo2(interp(), sptr1, sptr2, flags,
+  ClientData result = Tcl_VarTraceInfo2(interp(), base.c_str(), idx.c_str(), flags,
 					TclVarTrace::vartrace_callback,
 					(ClientData) prev_obj);
   return (TclVarTrace*) result;
@@ -758,9 +743,8 @@ bool
 TclBase::tilde_subst(const string& name,
 		     string& subst_name) const
 {
-  StrBuf sptr(name);
   Tcl_DString dstr;
-  char* result = Tcl_TildeSubst(interp(), sptr, &dstr);
+  char* result = Tcl_TildeSubst(interp(), name.c_str(), &dstr);
   if ( !result ) {
     // エラーが起こった．
     // Ousterhout の本の例題ではここで Tcl_DStringFree() を呼んでいないが
@@ -784,7 +768,7 @@ TclBase::tilde_subst(const string& name,
 string
 TclBase::posix_error() const
 {
-  CONST84 char* ans = Tcl_PosixError(interp());
+  auto ans = Tcl_PosixError(interp());
   return string(ans);
 }
 
@@ -856,9 +840,7 @@ int
 TclBase::string_match(const string& str,
 		      const string& pat) const
 {
-  StrBuf sptr1(str);
-  StrBuf sptr2(pat);
-  return Tcl_StringMatch(sptr1, sptr2);
+  return Tcl_StringMatch(str.c_str(), pat.c_str());
 }
 
 // string が正規表現 pat にマッチするか調べる．
@@ -869,9 +851,7 @@ int
 TclBase::regexp_match(const string& str,
 		      const string& pat) const
 {
-  StrBuf sptr1(str);
-  StrBuf sptr2(pat);
-  return Tcl_RegExpMatch(interp(), sptr1, sptr2);
+  return Tcl_RegExpMatch(interp(), str.c_str(), pat.c_str());
 }
 
 // インタープリタを設定する．

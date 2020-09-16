@@ -19,11 +19,6 @@
 #include <tcl.h>
 #include "ym_config.h"
 
-// tcl8.4 で定義されている const マクロ
-#if !defined(CONST84)
-#define CONST84
-#endif
-
 
 //////////////////////////////////////////////////////////////////////
 // 名前空間の定義

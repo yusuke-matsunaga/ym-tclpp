@@ -32,7 +32,6 @@ include_directories(
 # ===================================================================
 
 set (SOURCES
-  src/StrBuf.h
   src/TclBase.cc
   src/TclCmd.cc
   src/TclHandler.cc
